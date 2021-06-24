@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 14px Helvetica, Arial; }
+      #messages { width: 100%; padding-top: 100px; text-align: center; }
+    </style>
+  </head>
+  <body>
+    <div id="messages">Shake: <span class="val"></span></div>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Base64/1.1.0/base64.min.js" integrity="sha512-gysqkfMGKYvQSEPi68aIzL4ffmrQ0I6azOoPJ+ocle8k1bblsHJh7QVVoy4HHQG2iPzvFmRbs81d8kkVSyCkjA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+      var socket = io();
+      socket.on('receive_sink', function (msg) {
+        payload = window.atob(msg.Payload)
+        var ts = new Date().getTime()-msg.Time + "ms"
+        $('.val').text(payload+"\t --> "+ts);
+      });
+    </script>
+  </body>
+</html>
