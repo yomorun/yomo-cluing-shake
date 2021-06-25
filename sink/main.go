@@ -58,7 +58,7 @@ func main() {
 	router.Use(ginMiddleware())
 	router.GET("/socket.io/*any", gin.WrapH(webSocketServer))
 	router.POST("/socket.io/*any", gin.WrapH(webSocketServer))
-	router.StaticFS("/public", http.Dir("./asset"))
+	router.StaticFS("/public", http.Dir("./sink/asset"))
 	router.Run(WebSocketAddr)
 
 	log.Print("✅ Serving socket.io on ", WebSocketAddr)
