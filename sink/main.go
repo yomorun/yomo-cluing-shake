@@ -34,10 +34,10 @@ var (
 )
 
 type SinkData struct {
-	Topic   string `y3:"0x20"` // Mqtt Topic
-	Payload []byte `y3:"0x21"` // Mqtt Payload
-	Time    int64  `y3:"0x22"` // Timestamp (ms)
-	From    string `y3:"0x23"` // Source IP
+	Topic   string `y3:"0x20" json:"topic"`   // Mqtt Topic
+	Payload []byte `y3:"0x21" json:"payload"` // Mqtt Payload
+	Time    int64  `y3:"0x22" json:"time"`    // Timestamp (ms)
+	From    string `y3:"0x23" json:"from"`    // Source IP
 }
 
 func main() {

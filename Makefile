@@ -16,3 +16,6 @@ debug_source:
 debug_emitter:
 	go run ./cmd/emitter/main.go
 
+debug_web:
+	cd web && yarn && yarn start
+

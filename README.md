@@ -1,11 +1,6 @@
 # yomo-cluing-shake
 
 
-
-![](effect.gif)
-
-
-
 ## 如何运行
 
 ### 先决条件
@@ -40,7 +35,7 @@ $ yomo version
 YoMo CLI version: v0.0.6
 ```
 
-当然也可以直接下载可执行文件: [yomo-v0.0.6-x86_64-linux.tgz](https://github.com/yomorun/cli/releases/download/v0.0.6/yomo-v0.0.6-x86_64-linux.tgz)
+也可以直接下载可执行文件: [yomo-v0.0.6-x86_64-linux.tgz](https://github.com/yomorun/cli/releases/download/v0.0.6/yomo-v0.0.6-x86_64-linux.tgz)， [yomo-v0.0.6-aarch64-linux.tgz](https://github.com/yomorun/cli/releases/download/v0.0.6/yomo-v0.0.6-aarch64-linux.tgz)
 
 ### 3. 运行shake-zipper
 
@@ -78,3 +73,13 @@ $ go run ./cmd/emitter/main.go
 # 如果是本地调试，可以运行 `make debug_emitter`
 ```
 
+### 8. 运行shake-web
+
+```bash
+$ cd web
+$ yarn
+$ yarn start
+# 如果是本地调试，可以运行 `make debug_web`
+```
+
+访问 http://localhost:3000/ 查看效果。
