@@ -1,5 +1,8 @@
 # yomo-cluing-shake
 
+![effect](https://github.com/yomorun/yomo-cluing-shake/releases/download/v0.1.0/effect.gif)
+
+
 
 ## 如何运行
 
