@@ -4,9 +4,12 @@ import cx from 'classnames';
 import { Main, Logo, Num } from './ui';
 import base64 from 'react-native-base64';
 
+const WEB_SOCKET_URL = process.env.REACT_APP_WEB_SOCKET_URL === undefined ? 'http://localhost:8000' : process.env.REACT_APP_WEB_SOCKET_URL
+const WEB_SOCKET_PATH = process.env.REACT_APP_WEB_SOCKET_PATH === undefined ? '/socket.io' : process.env.REACT_APP_WEB_SOCKET_PATH
+
 const OPYTIONS = process.env.NODE_ENV === 'production'
-    ? { apiUrl: 'http://localhost:8000', path: '/socket.io' }
-    : { apiUrl: 'http://localhost:8000', path: '/socket.io' };
+    ? { apiUrl: WEB_SOCKET_URL, path: WEB_SOCKET_PATH }
+    : { apiUrl: WEB_SOCKET_URL, path: WEB_SOCKET_PATH };
 
 export default function App() {
   const [result, setResult] = useState(null);
