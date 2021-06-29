@@ -31,6 +31,7 @@ var (
 	err             error
 	appName         = getEnvString("SHAKE_SINK_APP_NAME", "shake-sink")
 	zipperAddr      = getEnvString("SHAKE_ZIPPER_ADDR", "localhost:9000")
+	enableDebug     = getEnvBool("SHAKE_SINK_ENABLE_DEBUG", false)
 )
 
 type SinkData struct {
@@ -116,6 +117,18 @@ func getEnvString(key string, defaultValue string) string {
 	return defaultValue
 }
 
+func getEnvBool(key string, defaultValue bool) bool {
+	value := os.Getenv(key)
+	if len(value) != 0 {
+		flag, err := strconv.ParseBool(value)
+		if err != nil {
+			return defaultValue
+		}
+		return flag
+	}
+	return defaultValue
+}
+
 // connectToZipper connects to `yomo-zipper` and receives the real-time data.
 func connectToZipper(zipperAddr string) error {
 	urls := strings.Split(zipperAddr, ":")
@@ -130,6 +143,10 @@ func connectToZipper(zipperAddr string) error {
 	}
 	defer cli.Close()
 
+	if enableDebug {
+		cli.EnableDebug()
+	}
+
 	cli.Pipe(Handler)
 	return nil
 }
@@ -139,8 +156,8 @@ func Handler(rxstream rx.RxStream) rx.RxStream {
 	stream := rxstream.
 		Subscribe(SinkDataKey). // 监听来源于shake-flow生成的数据
 		OnObserve(decode).      // 解码数据为结构体
-		Map(broadcastData).     // 通过WebSocket广播数据
-		Encode(SinkDataKey)
+		Map(broadcastData)      // 通过WebSocket广播数据
+		//Encode(SinkDataKey)
 
 	return stream
 }
@@ -162,6 +179,8 @@ func broadcastData(_ context.Context, data interface{}) (interface{}, error) {
 	if webSocketServer != nil && data != nil {
 		fmt.Println(fmt.Sprintf("broadcast %s data: %v", WebSocketRoom, data))
 		webSocketServer.BroadcastToRoom("", WebSocketRoom, "receive_sink", data)
+	} else {
+		log.Printf("❌ Not eligible for broadcasting. webSocketServer=%v, data=%v\n", webSocketServer, data)
 	}
 
 	return data, nil
