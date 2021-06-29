@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -24,6 +25,9 @@ const (
 	SinkDataKey   = 0x11
 	WebSocketRoom = "yomo-demo"
 	WebSocketAddr = "0.0.0.0:8000"
+
+	S07Topic = "shake/20210627_cluing/S07"
+	S05Topic = "shake/20210627_cluing/S05"
 )
 
 var (
@@ -157,7 +161,6 @@ func Handler(rxstream rx.RxStream) rx.RxStream {
 		Subscribe(SinkDataKey). // 监听来源于shake-flow生成的数据
 		OnObserve(decode).      // 解码数据为结构体
 		Map(broadcastData)      // 通过WebSocket广播数据
-		//Encode(SinkDataKey)
 
 	return stream
 }
@@ -176,12 +179,66 @@ func decode(v []byte) (interface{}, error) {
 
 // broadcastData broadcasts the real-time data to socket.io clients.
 func broadcastData(_ context.Context, data interface{}) (interface{}, error) {
+	broadcastS07 := func(sinkData SinkData) {
+		s07Data := S07Data{Topic: sinkData.Topic, Time: sinkData.Time, From: sinkData.From}
+		err := json.Unmarshal(sinkData.Payload, &s07Data)
+		if err != nil {
+			fmt.Printf("Unmarshal Payload error: %v\n", err)
+		}
+		fmt.Println(fmt.Sprintf("broadcast %s data: %v", WebSocketRoom, s07Data))
+		webSocketServer.BroadcastToRoom("", WebSocketRoom, "receive_sink_s07", s07Data)
+	}
+
+	broadcastS05 := func(sinkData SinkData) {
+		s05Data := S05Data{Topic: sinkData.Topic, Time: sinkData.Time, From: sinkData.From}
+		err := json.Unmarshal(sinkData.Payload, &s05Data)
+		if err != nil {
+			fmt.Printf("Unmarshal Payload error: %v\n", err)
+		}
+		fmt.Println(fmt.Sprintf("broadcast %s data: %v", WebSocketRoom, s05Data))
+		webSocketServer.BroadcastToRoom("", WebSocketRoom, "receive_sink_s05", s05Data)
+	}
+
 	if webSocketServer != nil && data != nil {
-		fmt.Println(fmt.Sprintf("broadcast %s data: %v", WebSocketRoom, data))
-		webSocketServer.BroadcastToRoom("", WebSocketRoom, "receive_sink", data)
+		sinkData := data.(SinkData)
+		switch sinkData.Topic {
+		case S07Topic:
+			broadcastS07(sinkData)
+		case S05Topic:
+			broadcastS05(sinkData)
+		}
+
+		//fmt.Println(fmt.Sprintf("broadcast %s data: %v", WebSocketRoom, data))
+		//webSocketServer.BroadcastToRoom("", WebSocketRoom, "receive_sink", data)
 	} else {
 		log.Printf("❌ Not eligible for broadcasting. webSocketServer=%v, data=%v\n", webSocketServer, data)
 	}
 
 	return data, nil
+}
+
+type S07Data struct {
+	Topic string `json:"topic"` // Mqtt Topic
+	Time  int64  `json:"time"`  // Timestamp (ms)
+	From  string `json:"from"`  // Source IP
+
+	TenantId    string `json:"tenantId"`
+	DevEui      string `json:"devEui"`
+	Data        string `json:"data"`
+	CreateDate  string `json:"createDate"`
+	Temperature string `json:"temperature"`
+	Vertical    string `json:"vertical"`
+	Transverse  string `json:"transverse"`
+}
+
+type S05Data struct {
+	Topic string `json:"topic"` // Mqtt Topic
+	Time  int64  `json:"time"`  // Timestamp (ms)
+	From  string `json:"from"`  // Source IP
+
+	TenantId   string `json:"tenantId"`
+	DevEui     string `json:"devEui"`
+	Data       string `json:"data"`
+	CreateDate string `json:"createDate"`
+	Key        string `json:"key"`
 }

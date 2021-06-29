@@ -13,7 +13,7 @@ from, to {
 export const Num = styled.span`
   font-variant-numeric: tabular-nums;
   &.glow {
-    animation: ${glow} 200ms infinite alternate;
+    animation: ${glow} 500ms;
   }
 `;
 
@@ -24,7 +24,7 @@ export const Main = styled.section`
   align-items    : center;
 
   p {
-    margin-top   : 50px;
+    margin-top   : 30px;
     overflow     : hidden;
     font-size    : 30px;
     font-weight  : 700;
@@ -34,6 +34,6 @@ export const Main = styled.section`
 `;
 
 export const Logo = styled.img`
-  margin-top: 300px;
+  margin-top: 100px;
   width     : 100px;
 `;

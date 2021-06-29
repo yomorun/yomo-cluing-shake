@@ -1,8 +1,11 @@
 package main
 
 import (
+	"crypto/sha1"
+	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/yomorun/yomo-source-mqtt-starter/pkg/utils"
 
@@ -13,10 +16,11 @@ import (
 const ShakeDataKey = 0x10
 
 var (
-	codec      = y3.NewCodec(ShakeDataKey)
-	appName    = getEnvString("SHAKE_SOURCE_APP_NAME", "shake-source")
-	zipperAddr = getEnvString("SHAKE_ZIPPER_ADDR", "localhost:9000")
-	serverAddr = getEnvString("SHAKE_SOURCE_SERVER_ADDR", "0.0.0.0:1883")
+	codec       = y3.NewCodec(ShakeDataKey)
+	appName     = getEnvString("SHAKE_SOURCE_APP_NAME", "shake-source")
+	zipperAddr  = getEnvString("SHAKE_ZIPPER_ADDR", "localhost:9000")
+	serverAddr  = getEnvString("SHAKE_SOURCE_SERVER_ADDR", "0.0.0.0:1883")
+	enableDebug = getEnvBool("SHAKE_SOURCE_ENABLE_DEBUG", false)
 )
 
 type ShakeData struct {
@@ -28,7 +32,7 @@ type ShakeData struct {
 
 func main() {
 	handler := func(topic string, payload []byte, writer receiver.ISourceWriter) error {
-		log.Printf("receive: topic=%v, payload=%v\n", topic, string(payload))
+		//log.Printf("receive: topic=%v, payload=%v\n", topic, string(payload))
 
 		// Encode data via Y3 codec https://github.com/yomorun/y3-codec.
 		data := ShakeData{Topic: topic, Payload: payload, Time: utils.Now(), From: utils.IpAddr()}
@@ -41,7 +45,11 @@ func main() {
 			return err
 		}
 
-		log.Printf("write: sendingBuf=%#v\n", sendingBuf)
+		if enableDebug {
+			log.Printf("write: topic=%s, payload.hash=%#v, sendingBuf=%#x\n", topic, genSha1(payload), sendingBuf)
+		} else {
+			log.Printf("write: topic=%s, payload.hash=%#v\n", topic, genSha1(payload))
+		}
 		return nil
 	}
 
@@ -57,4 +65,22 @@ func getEnvString(key string, defaultValue string) string {
 		return value
 	}
 	return defaultValue
+}
+
+func getEnvBool(key string, defaultValue bool) bool {
+	value := os.Getenv(key)
+	if len(value) != 0 {
+		flag, err := strconv.ParseBool(value)
+		if err != nil {
+			return defaultValue
+		}
+		return flag
+	}
+	return defaultValue
+}
+
+func genSha1(buf []byte) string {
+	h := sha1.New()
+	h.Write(buf)
+	return fmt.Sprintf("%x", h.Sum(nil))
 }

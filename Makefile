@@ -15,7 +15,7 @@ debug_source:
 	go run ./source/main.go
 
 debug_emitter:
-	go run ./cmd/emitter/main.go
+	SHAKE_SOURCE_MQTT_PUB_INTERVAL=2000 go run ./cmd/emitter/main.go
 
 debug_web:
 	cd web && yarn && yarn start
