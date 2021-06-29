@@ -15,11 +15,14 @@ var (
 	brokerAddr = getEnvString("SHAKE_SOURCE_MQTT_BROKER_ADDR", "tcp://localhost:1883")
 	topic      = getEnvString("SHAKE_SOURCE_MQTT_PUB_TOPIC", "SHAKE")
 	interval   = getEnvInt("SHAKE_SOURCE_MQTT_PUB_INTERVAL", 500)
+	username   = getEnvString("SHAKE_SOURCE_MQTT_USERNAME", "yomo")
+	password   = getEnvString("SHAKE_SOURCE_MQTT_PASSWORD", "yomo")
 	counter    int64
 )
 
 func main() {
 	client := newMqttClient()
+
 	for {
 		if token := client.Connect(); token.Wait() && token.Error() != nil {
 			log.Printf("Connect error:%v\n", token.Error())
@@ -43,8 +46,8 @@ func main() {
 func newMqttClient() mqtt.Client {
 	options := mqtt.NewClientOptions().
 		AddBroker(brokerAddr).
-		SetUsername("admin").
-		SetPassword("public")
+		SetUsername(username).
+		SetPassword(password)
 	log.Println("Broker Addresses: ", options.Servers)
 	options.SetClientID(fmt.Sprintf("shake-source-pub-%d", time.Now().Unix()))
 	options.SetConnectTimeout(time.Duration(0) * time.Second)
