@@ -1,5 +1,6 @@
 VERSION=`git describe --tags`
 BUILD=`date -u +.%Y%m%d.%H%M%S`
+VER ?= $(shell cat VERSION)
 
 debug_zipper:
 	yomo serve -c ./zipper/workflow.yaml
