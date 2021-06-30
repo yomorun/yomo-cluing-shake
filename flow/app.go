@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"context"
-	"crypto/sha1"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -33,6 +32,7 @@ var (
 	appName               = getEnvString("SHAKE_FLOW_APP_NAME", "shake-flow")
 	zipperAddr            = getEnvString("SHAKE_ZIPPER_ADDR", "localhost:9000")
 	enableDebug           = getEnvBool("SHAKE_FLOW_ENABLE_DEBUG", false)
+	enableDispatch        = getEnvBool("SHAKE_FLOW_ENABLE_DISPATCH", true)
 	receiveGatewayInfoUrl = getEnvString("RECEIVE_GATEWAY_INFO", "http://yomo.cluing.com:30558/api-sdm/v1/receiveGatewayInfo")
 
 	homeyService = newHomeyService()
@@ -84,25 +84,33 @@ var decode = func(v []byte) (interface{}, error) {
 	}
 
 	rightNow := time.Now().UnixNano() / int64(time.Millisecond)
-	fmt.Println(fmt.Sprintf("[%s] %d > topic: %s; payload.hash:%s ⚡️=%dms", mold.From, mold.Time, mold.Topic, genSha1(mold.Payload), rightNow-mold.Time))
+	fmt.Println(fmt.Sprintf("[%s] %d > topic: %s; payload.len:%d ⚡️=%dms", mold.From, mold.Time, mold.Topic, len(mold.Payload), rightNow-mold.Time))
 
 	return mold, nil
 }
 
 var dispatch = func(_ context.Context, i interface{}) (interface{}, error) {
+	if !enableDispatch {
+		return i, nil
+	}
+
 	value := i.(ShakeData)
 
 	switch value.Topic {
 	case S07Topic:
-		err := handleS07(&value)
-		if err != nil {
-			fmt.Printf("❌ handleS07 error:%v\n", err)
-		}
+		go func() {
+			err := handleS07(&value)
+			if err != nil {
+				fmt.Printf("❌ handleS07 error:%v\n", err)
+			}
+		}()
 	case S05Topic:
-		err := handleS05(&value)
-		if err != nil {
-			fmt.Printf("❌ handleS05 error:%v\n", err)
-		}
+		go func() {
+			err := handleS05(&value)
+			if err != nil {
+				fmt.Printf("❌ handleS05 error:%v\n", err)
+			}
+		}()
 	}
 
 	return value, nil
@@ -269,10 +277,4 @@ func (h homeyServiceImpl) ReceiveGatewayInfo(request *GatewayRequest) (*GatewayR
 	}
 
 	return &result, nil
-}
-
-func genSha1(buf []byte) string {
-	h := sha1.New()
-	h.Write(buf)
-	return fmt.Sprintf("%x", h.Sum(nil))
 }
