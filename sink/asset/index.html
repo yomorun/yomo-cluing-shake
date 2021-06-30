@@ -9,16 +9,20 @@
     </style>
   </head>
   <body>
-    <div id="messages">Shake: <span class="val"></span></div>
+    <div id="messages">S07: <span class="val" id="s07"></span></div>
+    <div id="messages">S05: <span class="val" id="s05"></span></div>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Base64/1.1.0/base64.min.js" integrity="sha512-gysqkfMGKYvQSEPi68aIzL4ffmrQ0I6azOoPJ+ocle8k1bblsHJh7QVVoy4HHQG2iPzvFmRbs81d8kkVSyCkjA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
       var socket = io();
-      socket.on('receive_sink', function (msg) {
-        payload = window.atob(msg.Payload)
-        var ts = new Date().getTime()-msg.Time + "ms"
-        $('.val').text(payload+"\t --> "+ts);
+      socket.on('receive_sink_s07', function (msg) {
+        // payload = window.atob(msg.Payload)
+        var ts = new Date().getTime()-msg.time + "ms"
+        $('#s07').text(msg.temperature+"\t --> "+ts);
+      });
+      socket.on('receive_sink_s05', function (msg) {
+        var ts = new Date().getTime()-msg.time + "ms"
+        $('#s05').text(msg.key+"\t --> "+ts);
       });
     </script>
   </body>
