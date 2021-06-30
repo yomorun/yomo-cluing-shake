@@ -68,7 +68,7 @@ export default function App() {
       <Main>
         <Logo className='logo' src='logo.png' alt='YoMo' />
         <p>
-            <p>TOPIC: {resultS07.value[0].topic}</p>
+            TOPIC: {resultS07.value[0].topic}
             <li>
                 temperature:
                 <Num className={cx({ glow: resultS07.value[0].temperature === resultS07.value[1].temperature })}>
@@ -90,7 +90,7 @@ export default function App() {
         </p>
         <span>Delay: <Num>{resultS07.timestamp - resultS07.value[1].time}ms</Num></span>
           <p>
-              <p>TOPIC: {resultS05.value[0].topic}</p>
+              TOPIC: {resultS05.value[0].topic}
               <li>
                   Key:
                   <Num className={cx({ glow: resultS05.value[0].key === resultS05.value[1].key })}>
