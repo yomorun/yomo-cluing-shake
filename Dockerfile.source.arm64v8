@@ -1,6 +1,6 @@
 FROM yomorun/quic-mqtt:0.6.2-arm64v8
 
 COPY go.mod go.sum ./source .
-RUN GOPROXY="https://goproxy.cn" GOARCH=arm64 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o ./source ./main.go
+RUN GOPROXY="https://goproxy.cn" GOARCH=arm64 GOOS=linux go build -ldflags="-w -s" -o ./shake-source ./main.go
 
-CMD ["./source"]
+CMD ["./shake-source"]

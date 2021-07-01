@@ -1,0 +1,3 @@
+FROM nginx
+
+COPY ./proxy /etc/nginx/conf.d/
