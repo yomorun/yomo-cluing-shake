@@ -9,8 +9,8 @@ RUN cp  /usr/share/zoneinfo/Asia/Shanghai /etc/localtime  && \
 WORKDIR $GOPATH/src/github.com/yomorun/yomo-cluing-shake
 COPY go.mod go.sum ./sink/main.go .
 COPY ./sink/asset ./sink/asset
-RUN go get -d -v ./...
+RUN GOPROXY="https://goproxy.cn" GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o ./shake-sink ./main.go
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "go run main.go"]
+CMD ["./shake-sink"]

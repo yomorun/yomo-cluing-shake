@@ -8,6 +8,6 @@ RUN cp  /usr/share/zoneinfo/Asia/Shanghai /etc/localtime  && \
 
 WORKDIR $GOPATH/src/github.com/yomorun/yomo-cluing-shake
 COPY go.mod go.sum ./flow .
-RUN go get -d -v ./...
+RUN GOPROXY="https://goproxy.cn" GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o ./shake-flow ./app.go
 
-CMD ["sh", "-c", "go run app.go"]
+CMD ["./shake-flow"]
