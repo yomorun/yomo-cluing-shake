@@ -5,7 +5,8 @@ server {
 
     location / {
         add_header Access-Control-Allow-Origin *;
-        proxy_pass http://10.0.210.55:32338;
+        #proxy_pass http://10.0.210.55:32338;
         #proxy_pass http://192.168.108.120:3000;
+        proxy_pass ${PROXY_PASS};
     }
 }

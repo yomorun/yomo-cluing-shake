@@ -1,3 +1,7 @@
 FROM nginx
 
-COPY ./proxy /etc/nginx/conf.d/
+COPY ./proxy/default.conf.template /etc/nginx/conf.d/
+COPY ./proxy/docker-entrypoint.sh /
+
+ENTRYPOINT ["sh", "/docker-entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]
