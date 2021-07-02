@@ -4,7 +4,7 @@
 
 
 
-## 如何运行
+## 如何本地运行
 
 ### 先决条件
 
@@ -35,10 +35,10 @@ $ go install github.com/yomorun/cli/yomo@latest
 
 ```bash
 $ yomo version
-YoMo CLI version: v0.0.6
+YoMo CLI version: v0.0.7
 ```
 
-也可以直接下载可执行文件: [yomo-v0.0.6-x86_64-linux.tgz](https://github.com/yomorun/cli/releases/download/v0.0.6/yomo-v0.0.6-x86_64-linux.tgz)， [yomo-v0.0.6-aarch64-linux.tgz](https://github.com/yomorun/cli/releases/download/v0.0.6/yomo-v0.0.6-aarch64-linux.tgz)
+也可以直接下载可执行文件: [yomo-v0.0.7-x86_64-linux.tgz](https://github.com/yomorun/cli/releases/download/v0.0.7/yomo-v0.0.7-x86_64-linux.tgz)， [yomo-v0.0.7-aarch64-linux.tgz](https://github.com/yomorun/cli/releases/download/v0.0.7/yomo-v0.0.7-aarch64-linux.tgz)
 
 ### 3. 运行shake-zipper
 
@@ -86,3 +86,43 @@ $ yarn start
 ```
 
 访问 http://localhost:3000/ 查看效果。
+
+## 如何打包镜像
+
+以打包`yomorun/shake-source:latest`为例：
+
+```bash
+# 构建本地镜像
+$ docker build --no-cache -f Dockerfile.source -t local/shake-source:latest .
+# 标记为你要发布的镜像
+$ docker tag local/shake-source:latest yomorun/shake-source:latest
+# 发布镜像
+$ docker login -u yomorun -p {你的密码}
+$ docker push yomorun/shake-source:latest
+$ docker logout
+```
+
+源码已经为你提供了打包镜像所需的Dockerfile文件，打包出如下镜像：
+
+- yomorun/shake-zipper:latest
+- yomorun/shake-flow:latest
+- yomorun/shake-sink:latest
+- yomorun/shake-source:latest
+- yomorun/shake-emitter:latest
+- yomorun/shake-web:latest
+- yomorun/shake-web-proxy:latest
+
+## 如何通过CluingOS发布服务
+
+请参考相关文档:[在CluingOS中部署yomo-cluing-shake](https://ycella.feishu.cn/file/boxcnaMigXT8nvLJuh7ZnQm2Xkg)，主要涉及环境变量和端口的配置，列出可配置的变量如下：
+
+| 服务            | 环境变量                                                     | 暴露端口  |
+| --------------- | ------------------------------------------------------------ | --------- |
+| shake-zipper    |                                                              | 9000/UDP  |
+| shake-flow      | SHAKE_ZIPPER_ADDR={shake-zipper的地址}                       |           |
+| shake-sink      | SHAKE_ZIPPER_ADDR={shake-zipper的地址}                       | 8000/TCP  |
+| shake-source    | SHAKE_ZIPPER_ADDR={shake-zipper的地址}<br />SHAKE_SOURCE_SERVER_ADDR=0.0.0.0:1883<br />CONNECTOR_MQTT_AUTH_ENABLE=true<br />CONNECTOR_MQTT_AUTH_USERNAME=yomo<br />CONNECTOR_MQTT_AUTH_PASSWORD=yomo | 1883/TCP  |
+| shake-web       | HOST=0.0.0.0<br />REACT_APP_WEB_SOCKET_URL=http://{shake-sink ip}:{shake-sink port} | 3000/HTTP |
+| shake-emitter   | SHAKE_SOURCE_MQTT_BROKER_ADDR=tcp://{shake-source ip}:{shake-source port} |           |
+| shake-web-proxy | PROXY_PASS=http://{shake-web cpe-vpn-ip}:{shake-web port}    | 8989/HTTP |
+
