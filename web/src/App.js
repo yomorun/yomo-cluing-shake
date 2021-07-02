@@ -56,49 +56,53 @@ export default function App() {
         }
     }, []);
 
-    if (!resultS07) {
-        return null;
-    }
-
-    if (!resultS05) {
-        return null;
-    }
-
   return (
       <Main>
         <Logo className='logo' src='logo.png' alt='YoMo' />
-        <p>
-            TOPIC: {resultS07.value[0].topic}
-            <li>
-                temperature:
-                <Num className={cx({ glow: resultS07.value[0].temperature === resultS07.value[1].temperature })}>
-                    {resultS07.value[1].temperature}
-                </Num>
-            </li>
-            <li>
-                vertical:
-                <Num className={cx({ glow: resultS07.value[0].vertical === resultS07.value[1].vertical })}>
-                    {resultS07.value[1].vertical}
-                </Num>
-            </li>
-            <li>
-                transverse:
-                <Num className={cx({ glow: resultS07.value[0].transverse === resultS07.value[1].transverse })}>
-                    {resultS07.value[1].transverse}
-                </Num>
-            </li>
-        </p>
-        <span>Delay: <Num>{resultS07.timestamp - resultS07.value[1].time}ms</Num></span>
-          <p>
-              TOPIC: {resultS05.value[0].topic}
-              <li>
-                  Key:
-                  <Num className={cx({ glow: resultS05.value[0].key === resultS05.value[1].key })}>
-                      {resultS05.value[1].key}
-                  </Num>
-              </li>
-          </p>
-          <span>Delay: <Num>{resultS05.timestamp - resultS05.value[1].time}ms</Num></span>
+          {
+              resultS07 && (
+                  <p>
+                      TOPIC: {resultS07.value[0].topic}
+                      <li>
+                          temperature:
+                          <Num className={cx({ glow: resultS07.value[0].temperature === resultS07.value[1].temperature })}>
+                              {resultS07.value[1].temperature}
+                          </Num>
+                      </li>
+                      <li>
+                          vertical:
+                          <Num className={cx({ glow: resultS07.value[0].vertical === resultS07.value[1].vertical })}>
+                              {resultS07.value[1].vertical}
+                          </Num>
+                      </li>
+                      <li>
+                          transverse:
+                          <Num className={cx({ glow: resultS07.value[0].transverse === resultS07.value[1].transverse })}>
+                              {resultS07.value[1].transverse}
+                          </Num>
+                      </li>
+                      <br/>
+                      <span>Delay: <Num>{resultS07.timestamp - resultS07.value[1].time}ms</Num></span>
+                  </p>
+              )
+          }
+
+          {
+              resultS05 && (
+                  <p>
+                      TOPIC: {resultS05.value[0].topic}
+                      <li>
+                          Key:
+                          <Num className={cx({ glow: resultS05.value[0].key === resultS05.value[1].key })}>
+                              {resultS05.value[1].key}
+                          </Num>
+                      </li>
+                      <br/>
+                      <span>Delay: <Num>{resultS05.timestamp - resultS05.value[1].time}ms</Num></span>
+                  </p>
+              )
+          }
+
       </Main>
   )
 };

@@ -222,13 +222,13 @@ type S07Data struct {
 	Time  int64  `json:"time"`  // Timestamp (ms)
 	From  string `json:"from"`  // Source IP
 
-	TenantId    string `json:"tenantId"`
-	DevEui      string `json:"devEui"`
-	Data        string `json:"data"`
-	CreateDate  string `json:"createDate"`
-	Temperature string `json:"temperature"`
-	Vertical    string `json:"vertical"`
-	Transverse  string `json:"transverse"`
+	TenantId    string  `json:"tenantId"`
+	DevEui      string  `json:"devEui"`
+	Data        string  `json:"data"`
+	CreateDate  int64   `json:"createDate"`
+	Temperature float64 `json:"temperature"`
+	Vertical    float64 `json:"vertical"`
+	Transverse  float64 `json:"transverse"`
 }
 
 type S05Data struct {
@@ -239,6 +239,6 @@ type S05Data struct {
 	TenantId   string `json:"tenantId"`
 	DevEui     string `json:"devEui"`
 	Data       string `json:"data"`
-	CreateDate string `json:"createDate"`
+	CreateDate int64  `json:"createDate"`
 	Key        string `json:"key"`
 }

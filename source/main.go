@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/sha1"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -43,7 +45,13 @@ func main() {
 			return err
 		}
 
-		log.Printf("write: topic=%s, payload.len=%#v\n", topic, len(payload))
+		if enableDebug {
+			log.Printf("write: topic=%s, payload.hash=%s, payload=%s, sendingBuf.hash=%s\n",
+				topic, genSha1(payload), string(payload), genSha1(sendingBuf))
+		} else {
+			log.Printf("write: topic=%s, payload.hash=%s\n", topic, genSha1(payload))
+		}
+
 		return nil
 	}
 
@@ -71,4 +79,10 @@ func getEnvBool(key string, defaultValue bool) bool {
 		return flag
 	}
 	return defaultValue
+}
+
+func genSha1(buf []byte) string {
+	h := sha1.New()
+	h.Write(buf)
+	return fmt.Sprintf("%x", h.Sum(nil))
 }

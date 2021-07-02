@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"crypto/sha1"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -84,7 +85,7 @@ var decode = func(v []byte) (interface{}, error) {
 	}
 
 	rightNow := time.Now().UnixNano() / int64(time.Millisecond)
-	fmt.Println(fmt.Sprintf("[%s] %d > topic: %s; payload.len:%d ⚡️=%dms", mold.From, mold.Time, mold.Topic, len(mold.Payload), rightNow-mold.Time))
+	fmt.Println(fmt.Sprintf("[%s] %d > topic: %s; payload.hash:%s ⚡️=%dms", mold.From, mold.Time, mold.Topic, genSha1(mold.Payload), rightNow-mold.Time))
 
 	return mold, nil
 }
@@ -192,20 +193,20 @@ func getEnvBool(key string, defaultValue bool) bool {
 }
 
 type S07 struct {
-	TenantId    string `json:"tenantId"`
-	DevEui      string `json:"devEui"`
-	Data        string `json:"data"`
-	CreateDate  string `json:"createDate"`
-	Temperature string `json:"temperature"`
-	Vertical    string `json:"vertical"`
-	Transverse  string `json:"transverse"`
+	TenantId    string  `json:"tenantId"`
+	DevEui      string  `json:"devEui"`
+	Data        string  `json:"data"`
+	CreateDate  int64   `json:"createDate"`
+	Temperature float64 `json:"temperature"`
+	Vertical    float64 `json:"vertical"`
+	Transverse  float64 `json:"transverse"`
 }
 
 type S05 struct {
 	TenantId   string `json:"tenantId"`
 	DevEui     string `json:"devEui"`
 	Data       string `json:"data"`
-	CreateDate string `json:"createDate"`
+	CreateDate int64  `json:"createDate"`
 	Key        string `json:"key"`
 }
 
@@ -269,12 +270,27 @@ func (h homeyServiceImpl) ReceiveGatewayInfo(request *GatewayRequest) (*GatewayR
 		return nil, errors.New(fmt.Sprintf("ReadAll Body error: %v", err))
 	}
 
+	// 2021-07-02 body为空值也表示成功
+	if len(body) == 0 {
+		return &GatewayResponse{
+			RespCode: 0,
+			RespMsg:  "body为空值也表示成功",
+			Datas:    nil,
+		}, nil
+	}
+
 	// 解码为响应结果
 	var result GatewayResponse
 	err = json.Unmarshal(body, &result)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("Unmarshal GatewayResponse error: %v", err))
+		return nil, errors.New(fmt.Sprintf("Unmarshal GatewayResponse error: %v, body=%v", err, string(body)))
 	}
 
 	return &result, nil
+}
+
+func genSha1(buf []byte) string {
+	h := sha1.New()
+	h.Write(buf)
+	return fmt.Sprintf("%x", h.Sum(nil))
 }

@@ -55,13 +55,13 @@ func main() {
 }
 
 type S07 struct {
-	TenantId    string `json:"tenantId"`
-	DevEui      string `json:"devEui"`
-	Data        string `json:"data"`
-	CreateDate  string `json:"createDate"`
-	Temperature string `json:"temperature"`
-	Vertical    string `json:"vertical"`
-	Transverse  string `json:"transverse"`
+	TenantId    string  `json:"tenantId"`
+	DevEui      string  `json:"devEui"`
+	Data        string  `json:"data"`
+	CreateDate  int64   `json:"createDate"`
+	Temperature float64 `json:"temperature"`
+	Vertical    float64 `json:"vertical"`
+	Transverse  float64 `json:"transverse"`
 }
 
 func genS07() S07 {
@@ -69,10 +69,10 @@ func genS07() S07 {
 		TenantId:    "20210627_cluing",
 		DevEui:      "0850533277387820",
 		Data:        "CwcMys+69Iks0As4YS4N6A==",
-		CreateDate:  "1624937248919",
-		Temperature: fmt.Sprintf("%d", rand.Intn(100)),
-		Vertical:    fmt.Sprintf("%d", rand.Intn(100)),
-		Transverse:  fmt.Sprintf("%d", rand.Intn(100)),
+		CreateDate:  1624937248919,
+		Temperature: float64(rand.Intn(100)),
+		Vertical:    float64(rand.Intn(100)),
+		Transverse:  float64(rand.Intn(100)),
 	}
 }
 
@@ -80,7 +80,7 @@ type S05 struct {
 	TenantId   string `json:"tenantId"`
 	DevEui     string `json:"devEui"`
 	Data       string `json:"data"`
-	CreateDate string `json:"createDate"`
+	CreateDate int64  `json:"createDate"`
 	Key        string `json:"key"`
 }
 
@@ -89,7 +89,7 @@ func genS05() S05 {
 		TenantId:   "20210627_cluing",
 		DevEui:     "393235307d377504",
 		Data:       "AAAQ5gAAAQIIAA==",
-		CreateDate: "1624937248919",
+		CreateDate: 1624937248919,
 		Key:        fmt.Sprintf("0%d00", rand.Intn(10)),
 	}
 }
