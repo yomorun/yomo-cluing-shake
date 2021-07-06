@@ -126,7 +126,7 @@ func handleS07(v *ShakeData) error {
 
 	request := GatewayRequest{
 		Tenant:  mold.TenantId,
-		SubDate: time.Now().Unix(),
+		SubDate: v.Time,
 		DevEUI:  mold.DevEui,
 		Content: mold.Data,
 	}
@@ -154,7 +154,7 @@ func handleS05(v *ShakeData) error {
 
 	request := GatewayRequest{
 		Tenant:  mold.TenantId,
-		SubDate: time.Now().Unix(),
+		SubDate: v.Time,
 		DevEUI:  mold.DevEui,
 		Content: mold.Data,
 	}
