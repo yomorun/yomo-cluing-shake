@@ -160,7 +160,9 @@ yomorun/quic-mqtt:latest 是打包xxx-source的基础镜像，可以快速打包
 
    - 容器镜像：
      - 添加容器镜像：选择从DockerHub中搜索shake-sink
+ 
        ![cluing_cloud_3](https://github.com/yomorun/yomo-cluing-shake/releases/download/v0.1.0/cluing_cloud_3.jpg)
+    
      - 端口设置：指定容器暴露的服务端口，例如：8000
      - 环境变量：例如`SHAKE_ZIPPER_ADDR=shake-zipper.yomo-cluing-shake:9000`，这里的`shake-zipper.yomo-cluing-shake`则时创建shake-zipper后获得的zipper在内部DNS名。
    - 挂载存储和高级设置：在这个案例中都不需要设置。
@@ -230,7 +232,8 @@ yomorun/quic-mqtt:latest 是打包xxx-source的基础镜像，可以快速打包
 
 ```sql
 select device_sn,(timeCount/count)*1000 agv,count from(
-select device_sn,sum(unix_timestamp(end_time) -unix_timestamp(begin_time)) as timeCount,count(id) as count from sdm_device_logs_copy2 GROUP BY device_sn
+  select device_sn,sum(unix_timestamp(end_time) -unix_timestamp(begin_time)) as timeCount,
+  count(id) as count from sdm_device_logs_copy2 GROUP BY device_sn
 ) t
 ```
 
