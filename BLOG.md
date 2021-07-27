@@ -130,7 +130,7 @@ CluingOS提供工业物联网大数据智能平台服务及容器化、订阅式
 | source    | [Dockerfile.source](https://github.com/yomorun/yomo-cluing-shake/blob/main/Dockerfile.source) | [noise-source](https://hub.docker.com/r/yomorun/noise-source) | yomorun/shake-source:latest  |
 | emitter   | [Dockerfile.emitter](https://github.com/yomorun/yomo-cluing-shake/blob/main/Dockerfile.emitter) | [shake-emitter](https://hub.docker.com/r/yomorun/shake-emitter) | yomorun/shake-emitter:latest |
 | web       | [Dockerfile.web](https://github.com/yomorun/yomo-cluing-shake/blob/main/Dockerfile.web) | [shake-web](https://hub.docker.com/r/yomorun/shake-web)      | yomorun/shake-web:latest     |
-| quic-mqtt |                                                              | [yomorun/quic-mqtt](https://www.oschina.net/action/GoToLink?url=https%3A%2F%2Fhub.docker.com%2Fr%2Fyomorun%2Fquic-mqtt) | yomorun/quic-mqtt:latest     |
+| quic-mqtt |                                                              | [yomorun/quic-mqtt](https://hub.docker.com/r/yomorun/quic-mqtt) | yomorun/quic-mqtt:latest     |
 
 yomorun/quic-mqtt:latest 是打包xxx-source的基础镜像，可以快速打包自定义代码，但本案例中可以暂时忽略。
 
@@ -160,9 +160,9 @@ yomorun/quic-mqtt:latest 是打包xxx-source的基础镜像，可以快速打包
 
    - 容器镜像：
      - 添加容器镜像：选择从DockerHub中搜索shake-sink
- 
+
        ![cluing_cloud_3](https://github.com/yomorun/yomo-cluing-shake/releases/download/v0.1.0/cluing_cloud_3.jpg)
-    
+   
      - 端口设置：指定容器暴露的服务端口，例如：8000
      - 环境变量：例如`SHAKE_ZIPPER_ADDR=shake-zipper.yomo-cluing-shake:9000`，这里的`shake-zipper.yomo-cluing-shake`则时创建shake-zipper后获得的zipper在内部DNS名。
    - 挂载存储和高级设置：在这个案例中都不需要设置。
